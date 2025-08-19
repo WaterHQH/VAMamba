@@ -1,0 +1,79 @@
+name: test_VAMamba_depth6
+model_type: VAMambaModel
+scale: 1
+num_gpu: 2
+manual_seed: 0
+
+datasets:
+  test_1:
+    task: dehazy
+    name: dehazing_dataset
+    type: PairedImageDataset
+    dataroot_gt: /root/lanyun-fs/VAMamba/datasets/SOTS_outdoor/test/gt_val
+    dataroot_lq: /root/lanyun-fs/VAMamba/datasets/SOTS_outdoor/test/hazy_new_val
+    filename_tmpl: '{}_lq'
+    io_backend:
+      type: disk
+
+   
+
+      
+# network structures
+network_g:
+  type: VAMamba
+  upscale: 1
+  in_chans: 3
+  img_size: 256
+  img_range: 1.
+  d_state: 16
+  depths: [6, 6, 6, 6, 6, 6]
+  embed_dim: 180
+  mlp_ratio: 1.2
+
+  # LoRA配置
+  use_lora: True
+  lora_rank: 16
+  # Cache配置
+  use_cache: True
+  cache_size: 5
+
+  # 自适应扫描配置
+  use_adaptive_scan: True
+  score_map_patch_size: 32
+
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+
+# validation settings
+val:
+  save_img: false
+  suffix: ~  # add suffix to saved images, if None, use exp name
+  selfensemble_testing: false
+  patchwise_testing: false
+
+  patch_size: 64
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 2
+      test_y_channel: true
+    ssim:
+      type: calculate_ssim
+      crop_border: 2
+      test_y_channel: true
+    lpips:
+      type: calculate_lpips
+      crop_border: 0
+      test_y_channel: true
+    mae:
+      type: calculate_mae
+      crop_border: 2
+      test_y_channel: true
+    mae_y:
+      type: calculate_mae_y
+      crop_border: 2
+      test_y_channel: true
+
