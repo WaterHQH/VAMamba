@@ -49,16 +49,16 @@ network_g:
   embed_dim: 180
   mlp_ratio: 1.2
 
-  # LoRA配置
+  # LoRA
   use_lora: True
   lora_rank: 16
-  # Cache配置
+  # Cache
   use_cache: True
   cache_size: 5
 
-  # 自适应扫描配置
+ # adaptive scan
   use_adaptive_scan: False
-  score_map_patch_size: 32
+  score_map_patch_size: 64
 
 # path
 path:
